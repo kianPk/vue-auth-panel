@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Vue Auth Panel Demo</title>
+<style>
+:root{--bg:#0f1419;--card:#1a222c;--ink:#e8eef2;--muted:#8aa0b2;--accent:#3d9cf0;--err:#e05b5b;font-family:"Segoe UI",Tahoma,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(800px 400px at 20% 0%,#1a3040,var(--bg));color:var(--ink)}
+.page{max-width:420px;margin:0 auto;padding:2rem 1rem}.card{background:var(--card);border:1px solid #2a3542;border-radius:12px;padding:1.5rem}
+.muted{color:var(--muted);font-size:.9rem}label{display:block;margin-bottom:.85rem;font-size:.9rem}
+input{width:100%;margin-top:.35rem;padding:.65rem .75rem;border-radius:8px;border:1px solid #2a3542;background:#121820;color:var(--ink)}
+button{cursor:pointer;border:0;border-radius:8px;padding:.7rem 1rem;background:var(--accent);color:#041018;font-weight:600;width:100%}
+.tabs{display:flex;gap:.5rem;margin-bottom:1rem}.tabs button{background:#243040;color:var(--ink);width:auto}
+.tabs button.on{background:var(--accent);color:#041018}.err{color:var(--err)}h1{margin:0 0 .35rem;font-size:1.4rem}
+</style>
+</head>
+<body>
+<div class="page">
+<header style="display:flex;justify-content:space-between;margin-bottom:1.5rem"><strong>Vue Auth Panel</strong><span class="muted">demo</span></header>
+<div class="card" id="app"></div>
+</div>
+<script>
+const KEY='vap-users';
+const users=()=>JSON.parse(localStorage.getItem(KEY)||'{}');
+const saveUsers=u=>localStorage.setItem(KEY,JSON.stringify(u));
+let mode='login', session=JSON.parse(localStorage.getItem('vap-session')||'null');
+function render(){
+  const el=document.getElementById('app');
+  if(session){
+    el.innerHTML=`<h1>سلام، ${session.name}</h1><p class="muted">${session.email}</p><button id="out">خروج</button>`;
+    document.getElementById('out').onclick=()=>{session=null;localStorage.removeItem('vap-session');render()};
+    return;
+  }
+  el.innerHTML=`<div class="tabs"><button class="${mode==='login'?'on':''}" data-m="login">ورود</button><button class="${mode==='register'?'on':''}" data-m="register">ثبت‌نام</button></div>
+  <form id="f">
+    ${mode==='register'?'<label>نام<input id="name" type="text"/></label>':''}
+    <label>ایمیل<input id="email" type="email" required/></label>
+    <label>رمز<input id="password" type="password" required minlength="6"/></label>
+    <p class="err" id="err"></p>
+    <button type="submit">${mode==='login'?'ورود':'ثبت‌نام'}</button>
+  </form>
+  <p class="muted" style="margin-top:1rem">دموی localStorage — نسخهٔ JWT واقعی تو ریپو (server/)</p>`;
+  el.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{mode=b.dataset.m;render()});
+  document.getElementById('f').onsubmit=e=>{
+    e.preventDefault();
+    const email=document.getElementById('email').value.trim();
+    const password=document.getElementById('password').value;
+    const u=users();
+    const err=document.getElementById('err');
+    if(mode==='register'){
+      if(u[email]){err.textContent='email taken';return}
+      const name=(document.getElementById('name')?.value||email.split('@')[0]);
+      u[email]={email,password,name}; saveUsers(u);
+      session={email,name}; localStorage.setItem('vap-session',JSON.stringify(session)); render(); return;
+    }
+    if(!u[email]||u[email].password!==password){err.textContent='invalid credentials';return}
+    session={email,name:u[email].name}; localStorage.setItem('vap-session',JSON.stringify(session)); render();
+  };
+}
+render();
+</script>
+</body>
+</html>

@@ -1,18 +1,21 @@
 # Vue Auth Panel
 
-Full-stack **login / register** sample:
+Full-stack **login / register** — Vue 3 + Node JWT.
 
-- **Backend:** Node + Express + JWT (bcrypt password hash)
-- **Frontend:** Vue 3 + Vite + Pinia-style simple store
+[![Demo](https://img.shields.io/badge/demo-live-3d9cf0?style=flat-square)](https://kianpk.github.io/vue-auth-panel/)
+[![Vue](https://img.shields.io/badge/vue-3-42b883?style=flat-square&logo=vue.js&logoColor=white)](./web)
+[![Node](https://img.shields.io/badge/node-express%20%2B%20jwt-339933?style=flat-square&logo=node.js&logoColor=white)](./server)
+[![License: MIT](https://img.shields.io/badge/license-MIT-0f1a22?style=flat-square)](./LICENSE)
+
+## Live demo
+
+**https://kianpk.github.io/vue-auth-panel/**
+
+## Quick start
 
 ```bash
-# API
-cd server && npm i && npm run dev
-
-# Web (other terminal)
-cd web && npm i && npm run dev
+cd server && npm i && npm run dev   # :4000
+cd web && npm i && npm run dev      # :5173
 ```
-
-Default API: `http://localhost:4000` · Web: `http://localhost:5173`
 
 MIT · [@kianPk](https://github.com/kianPk)
